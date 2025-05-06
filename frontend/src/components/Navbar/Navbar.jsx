@@ -1,5 +1,5 @@
 
-import { Input } from 'antd';
+import { Input, message } from 'antd';
 const { Search } = Input;
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../../utils/axiosInstance';
@@ -24,6 +24,7 @@ const Navbar = (props) => {
 
     const onLogout = () => {
         localStorage.clear();
+        message.success('Logout successful');
         navigate('/login');
         setUserInfo("");
     };

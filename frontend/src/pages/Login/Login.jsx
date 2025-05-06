@@ -1,33 +1,44 @@
 import Navbar from "../../components/Navbar/Navbar"
-import { Form, Input, Row, Col, Divider, Button } from 'antd';
+import { Form, Input, Row, Col, Divider, Button, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
+import { useState } from "react";
 
 const Login = () => {
 
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const onFinish = async (values) => {
+        setIsLoading(true);
         // console.log(">>> check value: ", values);
 
-        // Call Login API
-        try {
-            const res = await axiosInstance.post('/login', {
-                email: values.username,
-                password: values.password
-            });
-            if (res.data && res.data.accessToken) {
-                localStorage.setItem("token", res.data.accessToken);
-                navigate('/dashboard');
-            }
-        } catch (error) {
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(error.response.data.message);
-            } else {
-                alert("An unexpected error occurred. Please try again.");
-            }
-        }
+        await new Promise(resolve => {
+            setTimeout(async () => {
+                // Call Login API
+                try {
+                    const res = await axiosInstance.post('/login', {
+                        email: values.email,
+                        password: values.password
+                    });
+                    if (res.data && res.data.accessToken) {
+                        message.success('Login successful');
+                        localStorage.setItem("token", res.data.accessToken);
+                        navigate('/dashboard');
+                    }
+                } catch (error) {
+                    if (error.response && error.response.data && error.response.data.message) {
+                        message.error(error.response.data.message);
+                    } else {
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                }
+
+                resolve(null);
+            }, 1000);
+        });
+        setIsLoading(false);
     };
 
     return (
@@ -51,8 +62,8 @@ const Login = () => {
                             onFinish={onFinish}
                         >
                             <Form.Item
-                                name="username"
-                                rules={[{ required: true, message: 'Please input your Username!' }]}
+                                name="email"
+                                rules={[{ required: true, message: 'Please input your Email!' }]}
                             >
                                 <Input size="large" prefix={<UserOutlined />} placeholder="Username" />
                             </Form.Item>
@@ -65,7 +76,7 @@ const Login = () => {
                             </Form.Item>
 
                             <Button block type="primary" htmlType="submit"
-                                className="mt-4"
+                                className="mt-4" loading={isLoading}
                             >
                                 Login
                             </Button>

@@ -66,6 +66,7 @@ const EditNote = (props) => {
                 onOk={() => form.submit()}
                 onCancel={closeAndResetModal}
                 okButtonProps={{ loading: isLoading }}
+                okText={'EDIT'}
             >
                 <Form
                     form={form}

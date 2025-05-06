@@ -1,35 +1,47 @@
 import Navbar from "../../components/Navbar/Navbar"
-import { Form, Input, Row, Col, Divider, Button } from 'antd';
+import { Form, Input, Row, Col, Divider, Button, message } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
+import { useState } from "react";
 
 const SignUp = () => {
 
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const onFinish = async (values) => {
-        console.log(">>> check value: ", values)
+        setIsLoading(true);
+        // console.log(">>> check value: ", values);
 
-        // Call SignUp API
-        try {
-            const res = await axiosInstance.post('/create-account', {
-                fullName: values.username,
-                email: values.email,
-                password: values.password
-            });
-            if (res.data && res.data.accessToken) {
-                localStorage.setItem("token", res.data.accessToken);
-                navigate('/dashboard');
-            }
+        await new Promise(resolve => {
+            setTimeout(async () => {
+                // Call SignUp API
+                try {
+                    const res = await axiosInstance.post('/create-account', {
+                        fullName: values.username,
+                        email: values.email,
+                        password: values.password
+                    });
+                    if (res.data && res.data.accessToken) {
+                        message.success(`Welcome ${values.username}`);
+                        localStorage.setItem("token", res.data.accessToken);
+                        navigate('/dashboard');
+                    }
 
-        } catch (error) {
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(error.response.data.message);
-            } else {
-                alert("An unexpected error occurred. Please try again.");
-            }
-        }
+                } catch (error) {
+                    if (error.response && error.response.data && error.response.data.message) {
+                        message.error(error.response.data.message);
+                    } else {
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                }
+
+                resolve(null);
+            }, 1000);
+        });
+
+        setIsLoading(false);
     };
 
     return (
@@ -51,6 +63,7 @@ const SignUp = () => {
                             name="login"
                             justify={'center'}
                             onFinish={onFinish}
+
                         >
                             <Form.Item
                                 name="username"
@@ -74,7 +87,7 @@ const SignUp = () => {
                             </Form.Item>
 
                             <Button block type="primary" htmlType="submit"
-                                className="mt-4"
+                                className="mt-4" loading={isLoading}
                             >
                                 SignUp
                             </Button>
