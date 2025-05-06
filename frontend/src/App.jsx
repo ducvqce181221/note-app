@@ -1,5 +1,5 @@
 import { Flex, Spin } from "antd"
-import Home from "./pages/Home/home"
+import Home from "./pages/Home/Home"
 import { LoadingOutlined } from "@ant-design/icons"
 import { useState } from "react"
 
