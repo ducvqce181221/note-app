@@ -8,7 +8,7 @@ import '@ant-design/v5-patch-for-react-19';
 import './index.css'
 import App from './App.jsx'
 import Login from "./pages/Login/Login.jsx";
-import SignUp from "./pages/SignUp/Signup.jsx";
+import SignUp from "./pages/SignUp/SignUp.jsx";
 
 
 const router = createBrowserRouter([

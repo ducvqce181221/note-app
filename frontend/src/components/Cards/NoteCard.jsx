@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import AddNote from "../../pages/Home/AddNote";
 import { useState } from "react";
 import EditNote from "../../pages/Home/EditNote";
 import { notification, Popconfirm } from "antd";
